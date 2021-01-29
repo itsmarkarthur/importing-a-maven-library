@@ -1,0 +1,57 @@
+Creating and importing a maven library for another maven project
+
+1. Add this to maven library pom.xml:
+<build>
+		<finalName>${artifactId}-${version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<!-- Run shade goal on package phase -->
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+</build>
+
+2. Ensure that only the required dependencies are included in final library to avoid conflicts etc by making use of maven dependency scopes e.g. provided, test
+
+3. In eclipse, right click maven library project -> Run as -> Maven clean -> right click project -> Run as -> Maven Install
+
+
+4. Copy jar file to a location on computer
+
+5. Create a Local repo folder on computer
+
+6. Install the jar file to local repo folder in Eclipse using embedded embedded Maven
+Run -> Run Configurations -> Maven Build (double click) -> Your goal is install:install-file
+set parameters: 
+'file' (location of jar),
+'groupId' 
+'artifactId'
+'version'
+'packaging' (jar)
+'localRepositoryPath' (location of local repo on computer)
+
+Click Run
+
+
+7. In the other maven project, go to pom and add a section to <repositories></repositories>:
+<repository>
+		<id>localmavenrepo</id>
+		<url>file://C:\Users\Mark\LocalMavenRepo</url>
+</repository>
+
+8. Add the library as new dependency in relation to the parameters set during its jar installation
+<dependency>
+			<groupId>(Insert parameter here)</groupId>
+			<artifactId>(Insert parameter here)</artifactId>
+			<version>(Insert parameter here)</version>
+</dependency>
